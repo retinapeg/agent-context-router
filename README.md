@@ -1,10 +1,33 @@
 # agent-context-router
 
-A small Python tool that gives a fresh AI agent session a bounded, citable context packet from a Markdown
-notes vault, and makes the agent's edits revision-checked. It uses only the standard library.
+**The problem.** A fresh AI agent session starts with no memory of a project. It needs the few notes that
+matter for the task, not the whole archive, and when it edits a note it must not overwrite a newer change
+made since it last read that note.
 
-Independent engineering project; not deployed in production or used commercially. Code was written with
-Claude Code (AI-assisted) from my specification.
+![Architecture: an AI agent picks a route and note slug; memory.py returns a bounded, sha256-cited packet and accepts or refuses revision-checked writes; optional ChatGPT bridge (unverified) and offline eval](docs/images/architecture.svg)
+
+*The agent chooses a route and note slug; `memory.py` deterministically maps that choice to permitted files,
+returns a packet capped at 12,000 characters by default with a sha256 for every file, and refuses any update
+based on a stale sha256.*
+
+**Evidence**
+- **Engineered:** a standard-library Python router and write path. Over-cap packets are refused, never truncated;
+  updates are compare-and-swap under a file lock, with no delete. 84 unit tests: on macOS 80 pass, and the other
+  4 (MCP SDK interop checks) need a dev dependency.
+- **Tested in fresh sessions:** two separate Claude Code sessions recovered a demo note's next action with the
+  correct sha256, one before and one after an edit made through `memory.py update` between them. Retrying that
+  edit with the old sha256 was refused and wrote nothing. Three controls with no file access could not answer.
+  One model, one exactly named note.
+- **Evaluated on 41 labelled requests** (37 synthetic notes, no model calls): given the labelled route and slug,
+  the router retrieved every required note (35/35 requests that have one) and loaded no unrelated notes (0/41),
+  by construction. When a simple keyword-matching stand-in chooses the route and note instead, it **lost to plain
+  BM25 top-1**: every required note retrieved on 21/31 requests against 24/31 (excluding the 4 job-prep and CV
+  requests the stand-in cannot select). The hard part is the route and slug choice.
+
+**Status.** Independent engineering project; not deployed in production or used commercially. Route and slug
+selection by a real model is **unverified** beyond the exactly named note above, and **ChatGPT integration is
+unverified**: no ChatGPT session has connected. Code was written with Claude Code (AI-assisted) from my
+specification.
 
 ## Demo (Python 3.11+, macOS/Linux, no dependencies)
 ```sh
@@ -23,9 +46,7 @@ git checkout vault/                                                             
 ```
 
 ## How it works
-![Architecture: agent, memory.py, vault, optional bridge, offline eval](docs/images/architecture.svg)
-
-(Editable source: [`docs/architecture.mmd`](docs/architecture.mmd).)
+The diagram at the top is generated from [`docs/architecture.mmd`](docs/architecture.mmd).
 
 - **Routing.** The agent, not the code, picks one route from [`ROUTING.md`](ROUTING.md) and one note slug from
   the category `INDEX.md`. `memory.py` does no language parsing; it maps the choice to permitted paths. It returns
