@@ -35,9 +35,9 @@ last read, and `memory.py update` either replaces the note under a file lock or 
 commands, while `eval/run_eval.py` calls the packet code in-process on a synthetic fixture vault.
 
 ## Does it use AI at runtime?
-No: `memory.py`, `bridge.py` and `eval/run_eval.py` are deterministic stdlib Python and call no model; the route and
-slug are chosen by whichever agent calls the CLI (in the eval, a label-free BM25 picker stands in for it). A model appears
-only in the fresh Claude Code sessions recorded in [`evidence/`](evidence/README.md), which used the router as a tool.
+No: `memory.py`, `bridge.py` and `eval/run_eval.py` are deterministic stdlib Python and call no model. The only model
+is the external agent that calls the CLI and chooses the route and slug (Claude Code in the sessions recorded in
+[`evidence/`](evidence/README.md)); in the eval, a label-free BM25 picker stands in for it.
 
 ## Problem
 A fresh agent session doesn't know yesterday's decisions, a project checkpoint or the next action on an
