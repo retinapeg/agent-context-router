@@ -17,6 +17,28 @@ acceptance checks and reviewed the evidence.
 | ChatGPT via MCP bridge (`bridge.py`) | **UNVERIFIED**: built and tested locally (43 tests + 4 official-SDK interop tests), never connected to ChatGPT |
 | Agent skill (`skills/`) | optional; restates the protocol; not separately evaluated |
 
+![Terminal output of eval/run_eval.py: a results table for router_oracle, router_lexical, bm25_top1, bm25_top3 and full_dump (all relevant notes retrieved 35/35, 21/35, 24/35, 31/35, 35/35), followed by a breakdown by request type](docs/images/eval-run.png)
+
+*Captured run of `python3 eval/run_eval.py | head -n 21` on the committed synthetic fixture vault (37 candidate notes, 41 hand-labelled requests, no model calls). Retrieval columns are deterministic; latency columns vary by run and machine load. Raw text: [`docs/images/eval-run.txt`](docs/images/eval-run.txt).*
+
+## System architecture
+![Architecture: an agent session sends a route and slug to memory.py context, which reads routes.json and the Markdown vault and returns a bounded, sha256-cited packet; writes go through memory.py new/update with a file lock and compare-and-swap; an optional bridge.py MCP server (ChatGPT unverified) reads synthetic idea notes and writes via memory.py; eval/run_eval.py calls the same packet code on a synthetic fixture vault](docs/images/architecture.svg)
+
+*Purple: model call · blue: deterministic code · green: human · amber: evaluation · grey: storage · dashed: external, optional, mocked or planned*
+
+An agent session (for example Claude Code following `AGENTS.md`) picks one route from `ROUTING.md` and one slug
+from a category `INDEX.md`. `memory.py context` maps that choice to permitted files through `routes.json`, reads them
+fresh from the vault and returns a packet whose manifest gives each path and sha256, or emits nothing if a source is
+missing or the packet would exceed 12,000 characters. Writes come back as the full note text plus the sha256 the writer
+last read, and `memory.py update` either replaces the note under a file lock or reports a conflict. The optional
+`bridge.py` MCP server reads only `vault/ideas/synthetic-*.md` and sends its writes through the same `memory.py`
+commands, while `eval/run_eval.py` calls the packet code in-process on a synthetic fixture vault.
+
+## Does it use AI at runtime?
+No: `memory.py`, `bridge.py` and `eval/run_eval.py` are deterministic stdlib Python and call no model; the route and
+slug are chosen by whichever agent calls the CLI (in the eval, a label-free BM25 picker stands in for it). A model appears
+only in the fresh Claude Code sessions recorded in [`evidence/`](evidence/README.md), which used the router as a tool.
+
 ## Problem
 A fresh agent session doesn't know yesterday's decisions, a project checkpoint or the next action on an
 application. Pasting everything costs context and brings in unrelated material. Relying on chat history or
@@ -172,6 +194,7 @@ vault/               synthetic demo vault
 eval/                fixture builder, labelled requests, runner, committed raw results
 evidence/            sanitised fresh-session transcripts and what they show
 bridge.py, docs/     optional MCP bridge for ChatGPT (unverified)
+docs/architecture.mmd, docs/images/   architecture diagram source, rendered SVG, eval capture
 skills/              optional Claude Code skill
 test_*.py            unit, bridge, SDK-interop and eval-reproducibility tests
 ```

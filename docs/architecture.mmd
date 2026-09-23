@@ -1,0 +1,58 @@
+%% Architecture of agent-context-router at commit aedddf4
+%% Sources: memory.py, routes.json, ROUTING.md, AGENTS.md, CLAUDE.md, bridge.py, eval/run_eval.py, eval/build_fixtures.py, eval/requests.jsonl, test_eval.py, docs/chatgpt-bridge.md, .gitignore
+%% Render: npx @mermaid-js/mermaid-cli -i docs/architecture.mmd -o docs/images/architecture.svg -b white
+flowchart LR
+  subgraph callers["Callers (outside this repo)"]
+    AG["AI agent session<br/>picks route + slug<br/>(AGENTS.md protocol)"]
+    CG["ChatGPT connector<br/>UNVERIFIED:<br/>never connected"]
+  end
+
+  OWN["Vault owner<br/>edits notes, answers<br/>one targeted question"]
+
+  subgraph router["memory.py (stdlib CLI, no NLP)"]
+    CTX["context route slug<br/>bounded packet, manifest<br/>path + sha256, 12k cap"]
+    WR["new / update<br/>file lock, sha256 CAS,<br/>atomic rename, no delete"]
+  end
+
+  BR["bridge.py MCP server<br/>optional, 127.0.0.1,<br/>token, 4 tools"]
+
+  subgraph disk["Files on disk"]
+    MAP["routes.json<br/>generates ROUTING.md"]
+    VAULT["Markdown vault<br/>vault/ synthetic demo<br/>local/ real, git-ignored"]
+  end
+
+  subgraph evaluation["Offline eval (no model calls)"]
+    direction TB
+    FIX["Synthetic fixture vault<br/>+ 41 labelled requests"]
+    EVAL["eval/run_eval.py<br/>router vs BM25 top1/3,<br/>full-dump reference"]
+    FIX --> EVAL
+  end
+
+  AG <-->|"route + slug / packet"| CTX
+  AG <-->|"new text + sha256 / conflict"| WR
+  AG -.->|"entity unclear"| OWN
+  CG -.->|"MCP over tunnel"| BR
+  BR -->|"writes via subprocess"| WR
+  BR -->|"search, fetch"| VAULT
+  CTX -->|"route map"| MAP
+  CTX -->|"read fresh"| VAULT
+  WR -->|"replace or refuse"| VAULT
+  OWN -->|"edits (no lock)"| VAULT
+  evaluation -->|"build_packet in-process"| CTX
+
+  class AG ext;
+  class OWN human;
+  class CG mock;
+  class CTX,WR det;
+  class BR ext;
+  class MAP,VAULT store;
+  class FIX mock;
+  class EVAL eval;
+
+  classDef ai fill:#efe7fb,stroke:#6a4c93,stroke-width:2px,color:#2b1d45;
+  classDef det fill:#eef3f8,stroke:#2f5d8a,stroke-width:1.5px,color:#172c37;
+  classDef human fill:#e8f0ec,stroke:#285b48,stroke-width:1.5px,color:#173f32;
+  classDef eval fill:#f7efdf,stroke:#8b6330,stroke-width:1.5px,color:#4a3413;
+  classDef store fill:#f3f4f1,stroke:#65757b,stroke-width:1.5px,color:#172c37;
+  classDef ext fill:#ffffff,stroke:#2f5d8a,stroke-width:1.5px,stroke-dasharray:4 3,color:#172c37;
+  classDef mock fill:#ffffff,stroke:#9aa5a8,stroke-width:1.5px,stroke-dasharray:6 4,color:#65757b;
