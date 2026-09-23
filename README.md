@@ -23,6 +23,10 @@ git checkout vault/                                                             
 ```
 
 ## How it works
+![Architecture: agent, memory.py, vault, optional bridge, offline eval](docs/images/architecture.svg)
+
+(Editable source: [`docs/architecture.mmd`](docs/architecture.mmd).)
+
 - **Routing.** The agent, not the code, picks one route from [`ROUTING.md`](ROUTING.md) and one note slug from
   the category `INDEX.md`. `memory.py` does no language parsing; it maps the choice to permitted paths. It returns
   a fixed default set (`CURRENT_STATE`, `TASKS`, `ROUTING.md`) plus that one note, with a manifest giving each
