@@ -1,0 +1,1 @@
+mcp==2.2.0  # dev-only: official MCP SDK client for test_bridge_sdk.py; the runtime is stdlib only

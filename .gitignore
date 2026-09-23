@@ -1,0 +1,20 @@
+# Private runtime notes and derived output: never committed
+local/
+out/*
+!out/.gitkeep
+*.private.md
+.bridge-token
+bridge-token
+.env*
+
+# Tooling
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.DS_Store
+.obsidian/
+vault/.obsidian/
+.trash/

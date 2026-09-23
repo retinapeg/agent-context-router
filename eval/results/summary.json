@@ -1,0 +1,147 @@
+{
+  "params": {
+    "bm25_k1": 1.2,
+    "bm25_b": 0.75,
+    "picker_min_score": 2.0,
+    "picker_margin": 1.25,
+    "latency_repeats": 20,
+    "cli_repeats": 3
+  },
+  "n_requests": 41,
+  "n_candidate_notes": 37,
+  "request_types": {
+    "exact": 12,
+    "paraphrase": 10,
+    "confusable": 6,
+    "ambiguous": 6,
+    "planning": 3,
+    "job-prep": 3,
+    "cv-evidence": 1
+  },
+  "inputs_sha256_12": {
+    "requests.jsonl": "40da60e67e79",
+    "run_eval.py": "a0e017174526",
+    "memory.py": "a0cad196c9e4",
+    "fixture_root": "8b688f411ee7"
+  },
+  "environment": {
+    "python": "3.11.5",
+    "platform": "macOS-26.5-arm64-arm-64bit",
+    "machine": "arm64"
+  },
+  "index_build_ms": {
+    "bm25_full_text": 1.636,
+    "lexical_picker": 0.389
+  },
+  "router_cli_ms": {
+    "median": 40.0,
+    "max": 46.4
+  },
+  "conditions": {
+    "router_oracle": {
+      "requests_all_relevant_retrieved": "35/35",
+      "relevant_note_recall": 1.0,
+      "requests_with_unrelated": "0/41",
+      "unrelated_notes_mean": 0,
+      "unrelated_notes_total": 0,
+      "ambiguous_abstained": "6/6",
+      "packet_chars_median": 4378,
+      "packet_chars_max": 5112,
+      "errors": 0,
+      "latency_ms_median": 0.396,
+      "latency_ms_p95": 0.496,
+      "by_type_all_relevant": {
+        "confusable": "6/6",
+        "cv-evidence": "1/1",
+        "exact": "12/12",
+        "job-prep": "3/3",
+        "paraphrase": "10/10",
+        "planning": "3/3"
+      }
+    },
+    "router_lexical": {
+      "requests_all_relevant_retrieved": "21/35",
+      "relevant_note_recall": 0.643,
+      "requests_with_unrelated": "10/41",
+      "unrelated_notes_mean": 0.24,
+      "unrelated_notes_total": 10,
+      "ambiguous_abstained": "2/6",
+      "packet_chars_median": 4370,
+      "packet_chars_max": 5112,
+      "errors": 0,
+      "latency_ms_median": 0.413,
+      "latency_ms_p95": 0.465,
+      "by_type_all_relevant": {
+        "confusable": "4/6",
+        "cv-evidence": "0/1",
+        "exact": "12/12",
+        "job-prep": "0/3",
+        "paraphrase": "4/10",
+        "planning": "1/3"
+      }
+    },
+    "bm25_top1": {
+      "requests_all_relevant_retrieved": "24/35",
+      "relevant_note_recall": 0.743,
+      "requests_with_unrelated": "10/41",
+      "unrelated_notes_mean": 0.24,
+      "unrelated_notes_total": 10,
+      "ambiguous_abstained": "0/6",
+      "packet_chars_median": 4355,
+      "packet_chars_max": 4433,
+      "errors": 0,
+      "latency_ms_median": 0.373,
+      "latency_ms_p95": 0.423,
+      "by_type_all_relevant": {
+        "confusable": "4/6",
+        "cv-evidence": "0/1",
+        "exact": "12/12",
+        "job-prep": "0/3",
+        "paraphrase": "6/10",
+        "planning": "2/3"
+      }
+    },
+    "bm25_top3": {
+      "requests_all_relevant_retrieved": "31/35",
+      "relevant_note_recall": 0.929,
+      "requests_with_unrelated": "41/41",
+      "unrelated_notes_mean": 1.93,
+      "unrelated_notes_total": 79,
+      "ambiguous_abstained": "0/6",
+      "packet_chars_median": 5677,
+      "packet_chars_max": 5918,
+      "errors": 0,
+      "latency_ms_median": 0.544,
+      "latency_ms_p95": 0.596,
+      "by_type_all_relevant": {
+        "confusable": "6/6",
+        "cv-evidence": "1/1",
+        "exact": "12/12",
+        "job-prep": "0/3",
+        "paraphrase": "9/10",
+        "planning": "3/3"
+      }
+    },
+    "full_dump": {
+      "requests_all_relevant_retrieved": "35/35",
+      "relevant_note_recall": 1.0,
+      "requests_with_unrelated": "41/41",
+      "unrelated_notes_mean": 35.78,
+      "unrelated_notes_total": 1467,
+      "ambiguous_abstained": "0/6",
+      "packet_chars_median": 35256,
+      "packet_chars_max": 35256,
+      "errors": 0,
+      "latency_ms_median": 3.976,
+      "latency_ms_p95": 4.465,
+      "by_type_all_relevant": {
+        "confusable": "6/6",
+        "cv-evidence": "1/1",
+        "exact": "12/12",
+        "job-prep": "3/3",
+        "paraphrase": "10/10",
+        "planning": "3/3"
+      }
+    }
+  }
+}

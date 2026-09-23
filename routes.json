@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "vault_dir": "vault",
+  "max_chars": 12000,
+  "default_set": ["vault/CURRENT_STATE.md", "vault/TASKS.md", "ROUTING.md"],
+  "routes": {
+    "job": {
+      "task": "Specific job status or follow-up",
+      "category": "jobs",
+      "entity": "required",
+      "extra_files": [],
+      "exclusions": "No unrelated jobs or career evidence by default."
+    },
+    "job-prep": {
+      "task": "Job application or interview preparation",
+      "category": "jobs",
+      "entity": "required",
+      "extra_files": ["vault/career/EVIDENCE_BANK.md"],
+      "exclusions": "No other jobs or unverified career claims. Fails if the canonical evidence bank is unavailable."
+    },
+    "cv-evidence": {
+      "task": "CV evidence work",
+      "category": null,
+      "entity": "none",
+      "extra_files": ["vault/career/EVIDENCE_BANK.md", "vault/career/CV_VARIANTS.md"],
+      "exclusions": "No CV drafting or placeholder CVs. Fails if canonical sources are unavailable."
+    },
+    "idea": {
+      "task": "Idea capture or development",
+      "category": "ideas",
+      "entity": "required",
+      "extra_files": [],
+      "exclusions": "No job history; do not implement the idea automatically."
+    },
+    "project": {
+      "task": "Project or research work",
+      "category": "projects",
+      "entity": "required",
+      "extra_files": [],
+      "exclusions": "Follow named links only on request; no recursive import."
+    },
+    "session": {
+      "task": "Session recovery",
+      "category": "sessions",
+      "entity": "required",
+      "extra_files": [],
+      "exclusions": "No chat history; load the referenced entity only via a second explicit command."
+    },
+    "planning": {
+      "task": "General planning",
+      "category": null,
+      "entity": "none",
+      "extra_files": ["vault/DECISIONS.md"],
+      "exclusions": "No all-vault scan; request a category index explicitly if needed."
+    }
+  }
+}
