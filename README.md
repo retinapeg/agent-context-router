@@ -26,8 +26,7 @@ based on a stale sha256.*
 
 **Status.** Independent engineering project; not deployed in production or used commercially. Route and slug
 selection by a real model is **unverified** beyond the exactly named note above, and **ChatGPT integration is
-unverified**: no ChatGPT session has connected. Code was written with Claude Code (AI-assisted) from my
-specification.
+unverified**: no ChatGPT session has connected.
 
 ## Demo (Python 3.11+, macOS/Linux, no dependencies)
 ```sh

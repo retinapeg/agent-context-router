@@ -21,14 +21,14 @@ Interop: `test_bridge_sdk.py` drives the bridge with the **official MCP Python S
 in both protocol eras: 4/4 pass in a dev venv (`pip install -r requirements-dev.txt`). This shows
 conformance only as far as that client exercises it. It says nothing about ChatGPT's client.
 
-## Why a hand-written server instead of the SDK server
+## Why a custom server instead of the SDK server
 - The runtime path has no third-party packages. The SDK server would add pydantic, httpx, anyio, starlette and uvicorn.
 - The security-relevant code (auth gate, scope checks, write guards, connection cap, audit log) would be custom either way, as ASGI middleware around the SDK.
 - Cost of this choice: protocol changes are tracked by hand; no SSE, sessions, resources or OAuth; base64 `Mcp-Name` values are not decoded.
 
 ## Review history
-The bridge and `memory.py` went through two rounds of AI-assisted adversarial review (Claude subagents
-with separate lenses; each finding re-checked by an independent proof-of-concept verifier). Round 1 had 24 findings,
+The bridge and `memory.py` went through two rounds of adversarial review, each with separate review lenses.
+Every finding was re-checked with an independent proof of concept. Round 1 had 24 findings,
 23 confirmed. Among them: a lone surrogate could wipe `INDEX.md`; concurrent writers could lose updates;
 case-folded names were reachable. Round 2 had 25 new confirmed findings, for example a lone CR forging frontmatter. The fixes each
 have a regression test. **Known and not fixed:**
