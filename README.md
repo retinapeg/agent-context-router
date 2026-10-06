@@ -6,7 +6,7 @@ Can a fresh AI agent session load only the project notes it needs, within a fixe
 
 **Why it matters:** Context loading for agents is an engineering problem (what gets loaded, how much, and whether a concurrent edit is lost) before it is a retrieval problem. The engineering here holds up; the fancy routing lost to a 30-year-old ranking function, and the README keeps that answer.
 
-**Status:** Complete (tag `v1.0.0`; three later documentation-only commits). Not deployed or used commercially.
+**Status:** Complete (tag `v1.0.0`; later commits are documentation only). Not deployed or used commercially.
 
 - `memory.py context <route> [<note>]` prints one Markdown packet: the chosen note plus a few fixed project files, each with its character count and a 12-character sha256 prefix. Packets over the budget (12,000 characters by default) are refused with a non-zero exit, not truncated.
 - `memory.py update --expect <sha>` is a compare-and-swap under a file lock. An edit against a stale hash is refused and nothing is written.
@@ -27,9 +27,9 @@ Can a fresh AI agent session load only the project notes it needs, within a fixe
 Python 3.11+, macOS or Linux, standard library only, no model calls:
 
 ```bash
-python3 -m unittest                               # 84 tests; 4 skip without the optional mcp package
+python3 -m unittest                               # 84 tests; 4 skip without the optional mcp package, 1 more on case-sensitive filesystems
 python3 memory.py context idea synthetic-comet-idea   # prints a packet with its manifest
-python3 eval/run_eval.py                          # re-runs the 5-condition evaluation; rewrites eval/results/ (only timings change)
+python3 eval/run_eval.py                          # re-runs the 5-condition evaluation; rewrites eval/results/ (raw.jsonl matches except latency; summary.* also records the local Python and platform)
 ```
 
 `test_eval.py` asserts that a rerun reproduces the committed `raw.jsonl` apart from timings.
