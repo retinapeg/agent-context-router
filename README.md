@@ -2,7 +2,7 @@
 
 Can a fresh AI agent session load only the project notes it needs, within a fixed character budget, and be prevented from overwriting a note that changed since it last read it?
 
-**Result:** The loading, budget and stale-write protection work and are tested. The retrieval idea did not beat the baseline: a keyword picker standing in for the agent's note choice retrieved every required note on 21 of 31 routable requests, against 24 of 31 for plain BM25 top-1 (21/35 and 24/35 over all labelled requests). Given the correct choice, the router is perfect by construction, so the hard part is the choice, and this repo does not solve it.
+**Result:** The loading, budget and stale-write protection work and are tested. The retrieval idea did not beat the baseline: a keyword picker standing in for the agent's note choice retrieved every required note on 21 of 31 routable requests, against 24 of 31 for plain BM25 top-1 (21/35 and 24/35 over the 35 of 41 labelled requests that have a required note). Given the correct choice, the router is perfect by construction, so the hard part is the choice, and this repo does not solve it.
 
 **Why it matters:** Context loading for agents is an engineering problem (what gets loaded, how much, and whether a concurrent edit is lost) before it is a retrieval problem. The engineering here holds up; the fancy routing lost to a 30-year-old ranking function, and the README keeps that answer.
 
